@@ -28,6 +28,11 @@ app.get('/openapi.yaml', (req, res) => {
   res.sendFile('openapi.yaml', { root: __dirname });
 });
 
+app.get('/logo.png', (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
+  res.sendFile('logo.png', { root: __dirname });
+});
+
 app.post('/clinicaltrials/:patientId', (req: Request, res: Response) => {
   const patientId = req.params.patientId;
   const body = req.body;

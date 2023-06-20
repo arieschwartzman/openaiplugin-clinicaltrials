@@ -4,7 +4,7 @@ info:
   description: A plugin that allows the user to find clinical trials using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global".
   version: 'v1'
 servers:
-  - url: https://1a08c4446972.ngrok.app
+  - url: https://openaiplugin.ngrok.app
 paths:
   /clinicaltrials/{patientId}:
     post:
@@ -49,6 +49,9 @@ components:
         location:
           type: string
           description: The location of the trial
+        gender:
+          type: string
+          description: The gender of the patient.
         query:
           type: string
           description: The search query for the clinical trials.

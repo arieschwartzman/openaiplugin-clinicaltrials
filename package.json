@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node dist/index.js", 
     "build": "npx tsc && npm run copy-assets",
-    "copy-assets": "copyfiles .well-known/ai-plugin.json openapi.yaml ./dist"
+    "copy-assets": "copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist"
   },
   "keywords": [],
   "author": "",
