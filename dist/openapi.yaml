@@ -1,0 +1,54 @@
+openapi: 3.0.1
+info:
+  title: Clinical Trials Plugin
+  description: A plugin that allows the user to find clinical trials using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global".
+  version: 'v1'
+servers:
+  - url: https://1a08c4446972.ngrok.app
+paths:
+  /clinicaltrials/{patientId}:
+    post:
+      operationId: getTrials
+      summary: Get the list of trials
+      parameters:
+      - in: path
+        name: patientId
+        schema:
+            type: string
+        required: true
+        description: The patient id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/trialsSearch'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTrialsResponse'
+components:
+  schemas:
+    getTrialsResponse:
+      type: object
+      properties:
+        todos:
+          type: array
+          items:
+            type: string
+          description: The list of trials.
+    trialsSearch:
+      type: object
+      properties:
+        stage: 
+          type: string
+          description: The stage of the cancer.
+        location:
+          type: string
+          description: The location of the trial
+        query:
+          type: string
+          description: The search query for the clinical trials.

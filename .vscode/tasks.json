@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: build",
+			"detail": "npx tsc && npm run copy-assets"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "npm: start",
+			"detail": "npm run build && node dist/index.js",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
