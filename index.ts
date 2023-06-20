@@ -10,7 +10,7 @@ dotenv.config();
 const app: Express = express();
 app.use(bodyParser.json());
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5003;
 
 app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');
