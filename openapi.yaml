@@ -49,6 +49,9 @@ components:
         location:
           type: string
           description: The location of the trial
+        age:
+          type: string
+          description: The age of the patient.
         gender:
           type: string
           description: The gender of the patient.
