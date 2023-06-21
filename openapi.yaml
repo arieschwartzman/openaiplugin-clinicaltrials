@@ -35,11 +35,18 @@ components:
     getTrialsResponse:
       type: object
       properties:
-        todos:
+        trials:
           type: array
           items:
-            type: string
-          description: The list of trials.
+            type: object
+            properties:
+              id:
+                type: string
+                description: The id of the trial.
+              description:
+                type: string
+                description: The description of the trial.
+
     trialsSearch:
       type: object
       properties:

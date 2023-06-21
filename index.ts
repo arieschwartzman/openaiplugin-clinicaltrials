@@ -73,7 +73,9 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
                }
             ]
         }]
-      }
+      },
+      verbose: true,
+      includeEvidence: true
     },
     patients: [
       {
@@ -122,7 +124,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
         const eligible = jobResponse.data.results.patients[0].inferences.filter((el: any) => el.value === "Eligible"); 
         const trials = eligible.slice(0, 5);
         const output = trials.map((trial: any) => { 
-          return trial.id
+          return {id: trial.id, description: trial.description};
         });
         res.send(output);
       }
