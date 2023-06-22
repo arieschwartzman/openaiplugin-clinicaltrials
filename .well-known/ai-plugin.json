@@ -2,8 +2,8 @@
     "schema_version": "v1",
     "name_for_human": "Clinical Trials finder",
     "name_for_model": "clinicaltrials",
-    "description_for_human": "Find Clinical Trials. You can find clinical trials.",
-    "description_for_model": "Plugin for managing a TODO list, you can find clinical trials.",
+    "description_for_human": "Find Clinical Trials.",
+    "description_for_model": "Find clinical trials.",
     "auth": {
       "type": "none"
     },
