@@ -62,7 +62,10 @@ components:
         gender:
           type: string
           description: The gender of the patient.
-        query:
+        targetTreatment:
           type: string
-          description: The search query for the clinical trials.
+          description: The primary reason the patient is seeking treatment.
+        conditions:
+          type: string
+          description: medical condition or medication the patient is taking.
         

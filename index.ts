@@ -56,7 +56,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
       {
         registryFilters: [{
             conditions: [
-               body.query
+               body.targetTreatment
             ],
             phases: [
                "phase2",
