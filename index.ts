@@ -5,12 +5,16 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 // import moment.js
 import moment from 'moment';
-
-// pare query string parameters
+const { TextAnalysisClient, AzureKeyCredential } = require("@azure/ai-language-text");
 
 dotenv.config();
 
+// Create a client to call Azure Text Analytics for Health
+const textAnalysisClient = new TextAnalysisClient(process.env.AZURE_TEXT_ANALYTICS_FOR_HEALTH_URL, 
+                                                  new AzureKeyCredential(process.env.AZURE_TEXT_ANALYTICS_FOR_HEALTH_KEY));
+
 const app: Express = express();
+// parse query string parameters
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 5003;
@@ -45,6 +49,35 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   const baseUrl = process.env.AZURE_HEALTH_INSIGHTS_URL;
 
   const url = `${baseUrl}/healthinsights/trialmatcher/jobs?api-version=2023-03-01-preview`
+  
+
+  // Look for the condition in TA4H and get the UMLS code
+  const documents = [body.conditions];
+  const actions = [
+    {
+      kind: "Healthcare",
+    },
+  ];
+  
+  const clinicalInfos = [];
+  
+  const poller = await textAnalysisClient.beginAnalyzeBatch(actions, documents, "en");
+  const results = await poller.pollUntilDone();
+  let  tah_result = "";
+  for await (const actionResult of results) {
+    if (actionResult.kind !== "Healthcare") {
+      throw new Error(`Expected a healthcare results but got: ${actionResult.kind}`);
+    }
+    for (const result of actionResult.results) {      
+      tah_result = result.entities[0].dataSources[0].entityId;
+      clinicalInfos.push({
+        system: "http://www.nlm.nih.gov/research/umls",
+        code: tah_result,
+        name: body.conditions,
+        value: "true"
+      });
+    }
+  }
   
   // Create a JSON payload
 
@@ -83,14 +116,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
          info: {
             sex: body.gender,
             birthDate: birthDate,
-            clinicalInfo: [
-               {
-                  system: "http://www.nlm.nih.gov/research/umls",
-                  code: "C0012544",
-                  name: "Biphosphonates",
-                  value: "true"
-               }               
-            ]
+            clinicalInfo: clinicalInfos             
          }
       }
    ]
