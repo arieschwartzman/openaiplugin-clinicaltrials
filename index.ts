@@ -45,6 +45,11 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   const body = req.body;
   console.log(`[server]: body: ${JSON.stringify(body)}`);
 
+  if (body.targetTreatment === undefined) {
+    res.status(400).send({ message: 'Missing required fields' });
+    return;
+  }
+
   // call using Axios for Azure Health Insights
   const baseUrl = process.env.AZURE_HEALTH_INSIGHTS_URL;
 
@@ -165,3 +170,5 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
+export default app;

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm run build && node dist/index.js",
     "build": "npx tsc && npm run copy-assets",
-    "copy-assets": "copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist"
+    "copy-assets": "copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist",
+    "tests": "mocha dist/tests.js"
   },
   "keywords": [],
   "author": "",
@@ -19,12 +20,19 @@
     "moment": "2.29.4"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.5",
     "@types/express": "^4.17.17",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^20.3.1",
+    "@types/supertest": "^2.0.12",
+    "chai": "^4.3.7",
     "concurrently": "^8.2.0",
     "copyfiles": "^2.4.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.1",
     "typescript": "^5.1.3"
   }
 }
