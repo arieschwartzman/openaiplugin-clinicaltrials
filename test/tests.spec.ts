@@ -33,7 +33,7 @@ it('should return an error for missing required fields', async () => {
     gender: 'male',
     conditions: 'aspirin',
     //Omit required field targetTreatment',
-    location: 'New York'
+    location: 'Birmingham'
   };
   const response = await request(app)
     .post(`/clinicaltrials/${patientId}`)

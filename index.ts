@@ -51,7 +51,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   }
 
   if (body.conditions === undefined) {
-    res.status(400).send({ message: 'Missing required conditions' });
+    res.status(400).send({ message: 'Missing required fields' });
     return;
   }
 

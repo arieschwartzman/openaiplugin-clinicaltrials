@@ -6,11 +6,11 @@
   "scripts": {
     "start": "npm run build && node dist/index.js",
     "build": "npx tsc && npm run copy-assets",
-    "copy-assets": "copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist",
-    "tests": "mocha dist/tests.js"
+    "copy-assets": "npx copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist",
+    "tests": "mocha dist/test/**/*.spec.js --timeout 10000"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["openaiplugin", "clinicaltrials", "openaiplugin-clinicaltrials"],
+  "author": "Arie Schwartzman",
   "license": "ISC",
   "dependencies": {
     "@azure/ai-language-text": "^1.1.0",
@@ -26,10 +26,7 @@
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
     "chai": "^4.3.7",
-    "concurrently": "^8.2.0",
-    "copyfiles": "^2.4.1",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
