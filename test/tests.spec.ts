@@ -40,5 +40,5 @@ it('should return an error for missing required fields', async () => {
     .send(body)
     .expect(400);
   expect(response.body).to.have.property('message');
-  expect(response.body.message).to.equal('Missing required fields');
+  expect(response.body.message).to.contains('Missing required');
 });
