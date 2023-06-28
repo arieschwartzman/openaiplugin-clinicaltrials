@@ -23,27 +23,62 @@ app.get('/', (req, res) => {
   res.send('Express + TypeScript Server');
 });
 
-// Serve local file ai-plugin.json as apllication/json
+/**
+ * Serve local file .well-known/ai-plugin.json as application/json
+ */
 app.get('/.well-known/ai-plugin.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.sendFile('./.well-known/ai-plugin.json', { root: __dirname });
 });
 
-// Server local file openapi.yaml as apllication/json
+
+/**
+ * Serve local file openapi.yaml as text/yaml
+ */
 app.get('/openapi.yaml', (req, res) => {
   res.setHeader('Content-Type', 'text/yaml');
   res.sendFile('openapi.yaml', { root: __dirname });
 });
 
+/**
+ * Serve local file logo.png as image/png
+ */
 app.get('/logo.png', (req, res) => {
   res.setHeader('Content-Type', 'image/png');
   res.sendFile('logo.png', { root: __dirname });
 });
 
+
+/**
+ * This endpoint is called by the Open AI plugin to exchange the OAuth code for an access token
+ */
+app.post('/auth/oauth_exchange', async (req: Request, res: Response) => {
+  const response = await axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', req.body, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+  res.setHeader('Content-Type', 'application/json');
+  res.send(response.data);
+});
+
+
+/**
+ * This endpoint is called by the Open AI plugin to get the clinical trials for a patient
+ */
 app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   const patientId = req.params.patientId;
   const body = req.body;
-  console.log(`[server]: body: ${JSON.stringify(body)}`);
+  const access_token = req.headers.authorization?.split(' ')[1];
+
+  // call msgraph to get the user's profile
+  const graphUrl = 'https://graph.microsoft.com/v1.0/me';
+  const graphResponse = await axios.get(graphUrl, {
+    headers: {
+      'Authorization': `Bearer ${access_token}`          
+    }
+  });
+
 
   if (body.targetTreatment === undefined) {
     res.status(400).send({ message: 'Missing required targetTreatment' });
@@ -162,7 +197,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
         const output = trials.map((trial: any) => { 
           return {id: trial.id, description: trial.description};
         });
-        res.send(output);
+        res.send({doctorEmail: graphResponse.data.mail, trials: output});
       }
   }
   catch (error) {

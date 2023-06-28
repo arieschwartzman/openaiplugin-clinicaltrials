@@ -35,6 +35,9 @@ components:
     getTrialsResponse:
       type: object
       properties:
+        doctorEmail:
+          type: string
+          description: We found some trials please contact you doctor via email.
         trials:
           type: array
           items:
