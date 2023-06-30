@@ -5,14 +5,8 @@
     "description_for_human": "Find Clinical Trials.",
     "description_for_model": "Find clinical trials.",
     "auth": {
-      "type": "oauth",
-      "client_url": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-      "scope": "User.Read offline_access",
-      "authorization_url": "https://openaiplugin.ngrok.app/auth/oauth_exchange",
-      "authorization_content_type": "application/json",
-      "verification_tokens": {
-          "openai": "b1a1806fa164432793042e02d0ea5b6b"
-      }
+      "type": "user_http",
+      "authorization_type": "bearer"
     },
     "api": {
       "type": "openapi",

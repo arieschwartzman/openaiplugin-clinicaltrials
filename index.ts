@@ -78,7 +78,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
       'Authorization': `Bearer ${access_token}`          
     }
   });
-
+  console.log(`[server]: graphResponse: ${JSON.stringify(graphResponse.data)}`);
 
   if (body.targetTreatment === undefined) {
     res.status(400).send({ message: 'Missing required targetTreatment' });
@@ -106,6 +106,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   
   const clinicalInfos = [];
   
+  console.log(`[server]: starting document analyzer: ${documents}`);
   const poller = await textAnalysisClient.beginAnalyzeBatch(actions, documents, "en");
   const results = await poller.pollUntilDone();
   let  tah_result = "";
@@ -123,6 +124,7 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
       });
     }
   }
+  console.log(`[server]: tah_result: ${tah_result}`);
   
   // Create a JSON payload
 
@@ -192,10 +194,17 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
       // take 5 first trials
       if (jobResponse) {
         // filter out only eligible trials
-        const eligible = jobResponse.data.results.patients[0].inferences.filter((el: any) => el.value === "Eligible"); 
-        const trials = eligible.slice(0, 5);
+        const eligibilityValue = body.eligibility ? "Eligible" : "Ineligible";
+        const filteredTrials = jobResponse.data.results.patients[0].inferences.filter((el: any) => el.value === eligibilityValue); 
+        const trials = filteredTrials.slice(0, 5);
         const output = trials.map((trial: any) => { 
-          return {id: trial.id, description: trial.description};
+          if (trial.evidence  && trial.evidence.length > 0) {
+            // concatinate all the eligibility criteria evidence into one string
+            const evidence = trial.evidence.map((e: any) => e.eligibilityCriteriaEvidence).join(' ');
+            return {id: trial.id, description: evidence};
+          } else {
+            return {id: trial.id, description: trial.description};
+          }
         });
         res.send({doctorEmail: graphResponse.data.mail, trials: output});
       }

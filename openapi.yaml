@@ -53,6 +53,9 @@ components:
     trialsSearch:
       type: object
       properties:
+        eligibility:
+          type: boolean
+          description: Is the patient eligible for the trial.
         stage: 
           type: string
           description: The stage of the cancer.
