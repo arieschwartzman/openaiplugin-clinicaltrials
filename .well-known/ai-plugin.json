@@ -5,8 +5,7 @@
     "description_for_human": "Find Clinical Trials.",
     "description_for_model": "Find clinical trials.",
     "auth": {
-      "type": "user_http",
-      "authorization_type": "bearer"
+      "type": "none"
     },
     "api": {
       "type": "openapi",

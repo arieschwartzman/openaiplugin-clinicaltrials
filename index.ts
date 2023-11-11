@@ -69,16 +69,16 @@ app.post('/auth/oauth_exchange', async (req: Request, res: Response) => {
 app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   const patientId = req.params.patientId;
   const body = req.body;
-  const access_token = req.headers.authorization?.split(' ')[1];
+  // const access_token = req.headers.authorization?.split(' ')[1];
 
   // call msgraph to get the user's profile
-  const graphUrl = 'https://graph.microsoft.com/v1.0/me';
-  const graphResponse = await axios.get(graphUrl, {
-    headers: {
-      'Authorization': `Bearer ${access_token}`          
-    }
-  });
-  console.log(`[server]: graphResponse: ${JSON.stringify(graphResponse.data)}`);
+  // const graphUrl = 'https://graph.microsoft.com/v1.0/me';
+  // const graphResponse = await axios.get(graphUrl, {
+  //   headers: {
+  //     'Authorization': `Bearer ${access_token}`          
+  //   }
+  // });
+  // console.log(`[server]: graphResponse: ${JSON.stringify(graphResponse.data)}`);
 
   if (body.targetTreatment === undefined) {
     res.status(400).send({ message: 'Missing required targetTreatment' });
@@ -170,15 +170,15 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
   }
 
   try {
-    const ahi_resposne = await axios.post(url, payload, 
+    const ahi_response = await axios.post(url, payload, 
       {
         headers: {
           'Content-Type': 'application/json',
           'Ocp-Apim-Subscription-Key': process.env.AZURE_HEALTH_INSIGHTS_KEY
         }  
       });
-      const location = ahi_resposne.headers['operation-location'];
-      console.log(`[server]: ahi_resposne: ${location}`);
+      const location = ahi_response.headers['operation-location'];
+      console.log(`[server]: ahi_response: ${location}`);
       let done = false;
       let tries = 0;
       let jobResponse;
@@ -194,19 +194,22 @@ app.post('/clinicaltrials/:patientId', async (req: Request, res: Response) => {
       // take 5 first trials
       if (jobResponse) {
         // filter out only eligible trials
-        const eligibilityValue = body.eligibility ? "Eligible" : "Ineligible";
+        let eligibilityValue = "Eligible";
+        if (body.eligibility === false) {
+          eligibilityValue = "Ineligible";
+        }
         const filteredTrials = jobResponse.data.results.patients[0].inferences.filter((el: any) => el.value === eligibilityValue); 
         const trials = filteredTrials.slice(0, 5);
         const output = trials.map((trial: any) => { 
           if (trial.evidence  && trial.evidence.length > 0) {
-            // concatinate all the eligibility criteria evidence into one string
+            // concatenate all the eligibility criteria evidence into one string
             const evidence = trial.evidence.map((e: any) => e.eligibilityCriteriaEvidence).join(' ');
             return {id: trial.id, description: evidence};
           } else {
             return {id: trial.id, description: trial.description};
           }
         });
-        res.send({doctorEmail: graphResponse.data.mail, trials: output});
+        res.send({trials: output});
       }
   }
   catch (error) {
