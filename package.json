@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node dist/index.js",
-    "build": "npx tsc && npm run copy-assets",
+    "build": "npm install -g typescript && tsc && npm run copy-assets",
     "copy-assets": "npx copyfiles .well-known/ai-plugin.json logo.png openapi.yaml ./dist",
     "tests": "mocha dist/test/**/*.spec.js --timeout 10000"
   },
